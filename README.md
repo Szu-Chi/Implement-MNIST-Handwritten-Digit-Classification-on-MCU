@@ -45,9 +45,9 @@ Non-trainable params: 0
 
 ## Step 2 Setup STM32 Peripherals:
 ### 1. **X-Cube-AI**
-- Click Software Packs -> Select Components
+- Click Software Packs -> Select Components\
     ![image](img/Select%20Components.png)
-- Enable X-CUBE-AI Core
+- Enable X-CUBE-AI Core\
     ![image](img/Enable%20X-CUBE-AI%20Core.png)
 - Add Network
     - Software Packs -> STMicroelectronics.X-CUBE-AI.7.2.0 -> Add network

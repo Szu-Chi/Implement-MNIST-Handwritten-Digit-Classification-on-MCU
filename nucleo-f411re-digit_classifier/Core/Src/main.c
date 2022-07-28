@@ -47,6 +47,8 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
+stm32_vcp vcp;
+
 ai_handle network = AI_HANDLE_NULL;
 ai_float activations[AI_DIGIT_CNN_DATA_ACTIVATIONS_SIZE];
 ai_float in_data[AI_DIGIT_CNN_IN_1_SIZE];
@@ -96,22 +98,67 @@ void aiInit(void){
 int aiRun(const void *in_data, void *out_data){
   ai_i32 n_batch;
   ai_error err;
-  char buf[50];
-  int buf_len = 0;
 
   ai_input[0].data = AI_HANDLE_PTR(in_data);
   ai_output[0].data = AI_HANDLE_PTR(out_data);
   n_batch = ai_digit_cnn_run(network, &ai_input[0], &ai_output[0]);
 
   if (n_batch != 1) {
-    buf_len = sprintf(buf, "Error: could not run inference\r\n");
-    HAL_UART_Transmit(&huart2, (uint8_t *)buf, buf_len, 100);
+    printf("Error: could not run inference\r\n");
     err = ai_digit_cnn_get_error(network);
-    buf_len = sprintf(buf, "E: AI error - type=0x%x code=0x%x\r\n", err.type, err.code);
-    HAL_UART_Transmit(&huart2, (uint8_t *)buf, buf_len, 100);
+    printf("E: AI error - type=0x%x code=0x%x\r\n", err.type, err.code);
   };
 
   return 0;
+}
+
+void tic(){
+  __HAL_TIM_SetCounter(&htim11, 0);
+  HAL_TIM_Base_Start(&htim11);
+}
+
+uint16_t toc(){
+  HAL_TIM_Base_Stop(&htim11);
+  uint16_t duration = __HAL_TIM_GetCounter(&htim11);
+  return duration;
+}
+
+uint16_t get_packet_size(){
+  uint16_t packet_size = 0;
+  uint8_t *ptr = (uint8_t*)&packet_size;
+  for(int i = 1; i < 3; i++){
+    *(ptr++) = *(vcp.rx_buffer + i);
+  }
+  return packet_size;
+}
+
+void copy_byte(uint8_t *src, uint8_t* dst, uint16_t size){
+  for(int i = 0; i < size; i++){
+    *(dst++) = *(src++);
+  }
+}
+
+uint8_t unpack_data(){
+  uint8_t *dst;
+  switch(vcp.rx_buffer[0]){
+  case 'I':
+    dst = (uint8_t*)in_data;
+    break;
+  }
+
+  copy_byte(&vcp.rx_buffer[3], dst, vcp.rx_buffer_index-3);
+  vcp.rx_buffer_index=0;
+  return (vcp.rx_buffer[0] == 'I')?1:0;
+}
+
+uint16_t f_argmax(float *data, uint16_t len){
+  uint16_t max_pos = 0;
+  for(int i = 0; i < len; i++){
+    if(data[max_pos]<data[i]){
+        max_pos = i;
+    }
+  }
+  return max_pos;
 }
 /* USER CODE END 0 */
 
@@ -124,7 +171,7 @@ int main(void)
   /* USER CODE BEGIN 1 */
   char buf[50];
   int buf_len = 0;
-  uint32_t timestamp;
+  uint16_t duration;
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -149,25 +196,42 @@ int main(void)
   MX_CRC_Init();
   MX_TIM11_Init();
   /* USER CODE BEGIN 2 */
-  HAL_TIM_Base_Start(&htim11);
+  aiInit();
+  HAL_UART_Receive_IT(&huart2, &vcp.rx_data, 1);
 
   buf_len = sprintf(buf, "\r\n\r\nSTM32 X-Cube-AI classifier for MNIST\r\n");
   HAL_UART_Transmit(&huart2, (uint8_t *)buf, buf_len, 100);
-  aiInit();
+
+  uint16_t packet_size = 0;
+  uint16_t predict = 0;
+  uint8_t mcu_status = 0; // 0:Receive Test Image, 1: execute mcu process
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+    if(mcu_status){
+      tic();
+      aiRun(in_data, out_data);
+      duration = toc();
+      predict = f_argmax(out_data, AI_DIGIT_CNN_OUT_1_SIZE);
+
+      HAL_UART_Transmit(&huart2, (uint8_t *)&predict, 2, 10);
+      HAL_UART_Transmit(&huart2, (uint8_t *)&duration, 2, 10);
+      printf("Predict: %u | Duration: %u\r\n", predict, duration);
+      mcu_status=0;
+    }else{
+      if (vcp.rx_buffer_index>=3 && packet_size==0){
+        packet_size = get_packet_size();
+      }
+      if (vcp.rx_buffer_index >= packet_size+3 && packet_size){
+        mcu_status = unpack_data();
+        packet_size = 0;
+      }
+    }
     /* USER CODE END WHILE */
 
-	timestamp = htim11.Instance->CNT;
-	aiRun(in_data, out_data);
-    buf_len = sprintf(buf, "Duration: %lu\r\n", htim11.Instance->CNT - timestamp);
-    HAL_UART_Transmit(&huart2, (uint8_t *)buf, buf_len, 100);
-
-    HAL_Delay(100);
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */
@@ -220,7 +284,15 @@ void SystemClock_Config(void)
 }
 
 /* USER CODE BEGIN 4 */
-
+int _write(int file, char *ptr, int len)
+{
+  int DataIdx;
+  for (DataIdx=0; DataIdx<len; DataIdx++)
+  {
+    ITM_SendChar(*ptr++);
+  }
+  return len;
+}
 /* USER CODE END 4 */
 
 /**

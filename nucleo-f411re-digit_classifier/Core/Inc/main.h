@@ -36,7 +36,11 @@ extern "C" {
 
 /* Exported types ------------------------------------------------------------*/
 /* USER CODE BEGIN ET */
-
+typedef struct stm32_virtual_com_port{
+  uint8_t rx_data;
+  uint8_t rx_buffer[10000];
+  uint16_t rx_buffer_index;
+}stm32_vcp;
 /* USER CODE END ET */
 
 /* Exported constants --------------------------------------------------------*/

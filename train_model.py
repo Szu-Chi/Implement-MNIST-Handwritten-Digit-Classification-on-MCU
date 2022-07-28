@@ -1,5 +1,5 @@
 #%% [markdown]
-# # TensorFlow 2 quickstart for experts
+# # Traing NNIST Classifier
 # ### Import TensorFlow into your program:
 # code reference\
 # [TensorFlow 2 quickstart for beginners](https://www.tensorflow.org/tutorials/quickstart/beginner)

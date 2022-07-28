@@ -1,7 +1,7 @@
 {
     "_allocate_inputs": 4,
     "_allocate_outputs": 4,
-    "cli_parameters": "generate --name digit_cnn -m D:/0Lab/STM32Cube_AI/MNIST_digit_classification/digit_classifier_CNN.h5 --type keras --compression none --verbosity 1 --workspace C:\\Users\\r3101\\AppData\\Local\\Temp\\mxAI_workspace2346125108068006657589062539261552 --output C:\\Users\\r3101\\.stm32cubemx\\network_output --allocate-inputs --allocate-outputs",
+    "cli_parameters": "generate --name digit_cnn -m D:/0Lab/STM32Cube_AI/MNIST_digit_classification/digit_classifier_CNN.h5 --type keras --compression none --verbosity 1 --workspace C:\\Users\\r3101\\AppData\\Local\\Temp\\mxAI_workspace2947422619084008766508404102740556 --output C:\\Users\\r3101\\.stm32cubemx\\network_output --allocate-inputs --allocate-outputs",
     "cli_version": {
         "major": 1,
         "micro": 0,
@@ -12,12 +12,12 @@
         "factor": null,
         "layers": {}
     },
-    "date_time": "Thu Jul 28 00:52:23 2022",
+    "date_time": "Thu Jul 28 17:34:33 2022",
     "error": 0,
     "error_str": [],
     "exec_cmd": "generate",
     "exec_duration": 0.0,
-    "hash": "85b30625c8174a7a8a40b4cf523f6fca",
+    "hash": "54635afde218fca73d0a831103c6dd5c",
     "inputs": [
         "input_1"
     ],
@@ -95,6 +95,52 @@
             "type": "Nonlinearity"
         },
         {
+            "c_id": [
+                1
+            ],
+            "extras": {
+                "n_macc": 10384,
+                "n_params": 1168,
+                "psize": 4672,
+                "rom_output": {
+                    "c_size": 576,
+                    "fmt": {
+                        "format": "float"
+                    },
+                    "shape": [
+                        3,
+                        3,
+                        16,
+                        1
+                    ]
+                },
+                "rom_size": 4672
+            },
+            "id": 2,
+            "inputs": [
+                "conv2d"
+            ],
+            "name": "conv2d_1_conv2d",
+            "original": "Conv2D",
+            "type": "Conv2D"
+        },
+        {
+            "c_id": [],
+            "extras": {
+                "n_macc": 144,
+                "n_params": 0,
+                "psize": 0,
+                "rom_size": 0
+            },
+            "id": 2,
+            "inputs": [
+                "conv2d_1_conv2d"
+            ],
+            "name": "conv2d_1",
+            "original": "Conv2D",
+            "type": "Nonlinearity"
+        },
+        {
             "c_id": [],
             "extras": {
                 "n_macc": 0,
@@ -102,9 +148,9 @@
                 "psize": 0,
                 "rom_size": 0
             },
-            "id": 2,
+            "id": 3,
             "inputs": [
-                "conv2d"
+                "conv2d_1"
             ],
             "name": "flatten",
             "original": "Flatten",
@@ -112,13 +158,13 @@
         },
         {
             "c_id": [
-                1,
-                2
+                2,
+                3
             ],
             "extras": {
-                "n_macc": 5130,
-                "n_params": 5130,
-                "psize": 20520,
+                "n_macc": 1450,
+                "n_params": 1450,
+                "psize": 5800,
                 "rom_output": {
                     "c_size": 40,
                     "fmt": {
@@ -131,9 +177,9 @@
                         1
                     ]
                 },
-                "rom_size": 20520
+                "rom_size": 5800
             },
-            "id": 3,
+            "id": 4,
             "inputs": [
                 "flatten"
             ],
@@ -161,7 +207,7 @@
                 },
                 "rom_size": 0
             },
-            "id": 3,
+            "id": 4,
             "inputs": [
                 "dense_dense"
             ],
@@ -173,9 +219,9 @@
     "model_files": [
         "D:\\0Lab\\STM32Cube_AI\\MNIST_digit_classification\\digit_classifier_CNN.h5"
     ],
-    "model_n_params": 5338,
+    "model_n_params": 2826,
     "model_name": "digit_classifier_CNN",
-    "model_size": 21352,
+    "model_size": 11304,
     "model_type": "keras",
     "name": "digit_cnn",
     "outputs": [
@@ -199,7 +245,7 @@
             "name": "input_1"
         }
     ],
-    "rom_n_macc": 18600,
+    "rom_n_macc": 25448,
     "rom_outputs": [
         {
             "c_size": 40,
@@ -207,7 +253,7 @@
             "name": "dense"
         }
     ],
-    "rom_size": 21352,
+    "rom_size": 11304,
     "strategy": "heap_overlay",
     "tools_api_version": {
         "major": 1,

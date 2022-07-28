@@ -2,7 +2,7 @@
   ******************************************************************************
   * @file    digit_cnn.h
   * @author  AST Embedded Analytics Research Platform
-  * @date    Thu Jul 28 15:02:15 2022
+  * @date    Thu Jul 28 17:34:33 2022
   * @brief   AI Tool Automatic Code Generator for Embedded NN computing
   ******************************************************************************
   * @attention
@@ -69,7 +69,7 @@ AI_DEPRECATED
 #define AI_DIGIT_CNN_OUT_1_SIZE_BYTES  (40)
 
 /******************************************************************************/
-#define AI_DIGIT_CNN_N_NODES (3)
+#define AI_DIGIT_CNN_N_NODES (4)
 
 
 AI_API_DECLARE_BEGIN

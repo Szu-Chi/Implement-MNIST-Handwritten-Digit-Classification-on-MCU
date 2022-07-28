@@ -2,7 +2,7 @@
   ******************************************************************************
   * @file    digit_cnn_data.c
   * @author  AST Embedded Analytics Research Platform
-  * @date    Thu Jul 28 15:02:15 2022
+  * @date    Thu Jul 28 17:34:33 2022
   * @brief   AI Tool Automatic Code Generator for Embedded NN computing
   ******************************************************************************
   * @attention
@@ -26,8 +26,8 @@ ai_buffer g_digit_cnn_data_map_activations[AI_DIGIT_CNN_DATA_ACTIVATIONS_COUNT] 
   };
 ai_buffer g_digit_cnn_data_map_weights[AI_DIGIT_CNN_DATA_WEIGHTS_COUNT] = {
   AI_BUFFER_INIT(AI_FLAG_NONE,  AI_BUFFER_FORMAT_U8,
-    AI_BUFFER_SHAPE_INIT(AI_SHAPE_BCWH, 4, 1, 21352, 1, 1),
-    21352, NULL, s_digit_cnn_weights_array_u64),   /* weights_array */
+    AI_BUFFER_SHAPE_INIT(AI_SHAPE_BCWH, 4, 1, 11304, 1, 1),
+    11304, NULL, s_digit_cnn_weights_array_u64),   /* weights_array */
   };
 
 

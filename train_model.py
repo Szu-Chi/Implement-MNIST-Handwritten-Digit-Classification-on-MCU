@@ -35,7 +35,8 @@ plt.show()
 def make_model():
     input = keras.layers.Input(shape=(28, 28, 1))
     conv2d_1 = keras.layers.Conv2D(8, (5,5), strides=(3,3),activation='relu')(input)
-    flatten = keras.layers.Flatten()(conv2d_1)
+    conv2d_2 = keras.layers.Conv2D(16, (3,3), strides=(2,2),activation='relu')(conv2d_1)
+    flatten = keras.layers.Flatten()(conv2d_2)
     output = keras.layers.Dense(10, activation='softmax')(flatten)
     model = keras.models.Model(input, output)
     model.compile(

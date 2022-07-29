@@ -8,6 +8,7 @@ import tensorflow as tf
 from tensorflow import keras
 from tensorflow.keras.utils import plot_model
 import numpy as np
+from sklearn.metrics import accuracy_score
 
 from serial import Serial
 import struct
@@ -89,3 +90,17 @@ for i in range (25):
         send_Img_to_MCU(ser, test_img) 
         predict, duration = get_mcu_predict(ser)
     print(f'Ground True: {ground_true} | Predict: {predict} | Duration: {duration}us')
+
+#%% [markdown]
+# ### Evaluate MCU Classification Performance
+y_pred = []
+for x in x_test[:2500]:
+    with Serial(MCU_COM, baudrate, timeout=1) as ser:
+        send_Img_to_MCU(ser, x) 
+        predict, duration = get_mcu_predict(ser)
+    y_pred.append(predict)
+    # print(f'Ground True: {ground_true} | Predict: {predict} | Duration: {duration}us')
+
+y_pred = np.array(y_pred)
+model_acc = accuracy_score(y_test[:2500], y_pred)
+print(f'accuracy={model_acc}')
